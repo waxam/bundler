@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "start:build": "cd dist && es-dev-server --open",
+    "build": "rimraf dist && rollup -c rollup.config.js",
+    "start": "es-dev-server --app-index index.html --node-resolve --open --watch"
+  },
+  "devDependencies": {
+    "@open-wc/building-rollup": "^0.15.1",
+    "rimraf": "^2.6.3",
+    "rollup": "^1.15.4",
+    "es-dev-server": "^1.5.0"
+  },
+  "name": "bundler-service",
+  "version": "0.0.0",
+  "description": "Webcomponent bundler-service following open-wc recommendations",
+  "author": "bundler-service",
+  "license": "MIT",
+  "dependencies": {
+    "lit-html": "^1.0.0",
+    "lit-element": "^2.0.1",
+    "@adobe/lit-mobx": "0.0.2"
+  }
+}

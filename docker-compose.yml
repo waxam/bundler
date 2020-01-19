@@ -1,0 +1,14 @@
+version: '2'
+services:
+  app:
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      - /home/app/node_modules
+      - /home/app/openwc/node_modules
+      - /home/app/.config
+      - /home/app/.npm
+      - /home/app/.cache
+      - .:/home/app
+    command: "node ./index.js"
