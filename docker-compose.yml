@@ -1,5 +1,14 @@
-version: '2'
+version: "3.7"
 services:
+  reverse-proxy:
+    image: traefik:1.7 # The official Traefik docker image
+    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
+    ports:
+      - "80:80" # The HTTP port
+      - "8081:8080" # The Web UI (enabled by --api)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+
   app:
     build: .
     ports:
@@ -12,3 +21,32 @@ services:
       - /home/app/.cache
       - .:/home/app
     command: "node ./index.js"
+    environment:
+      - "MINIO_ACCESS_KEY=minioadmin"
+      - "MINIO_SECRET_KEY=minioadmin"
+      - "MINIO_URL=minio"
+
+  minio:
+    image: minio/minio:RELEASE.2020-01-16T22-40-29Z
+    volumes:
+      - data1-1:/data1
+      - data1-2:/data2
+    # ports:
+    #   - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    command: server /data1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=9000"
+      - "traefik.frontend.rule=Host:minio.${HOST:-docker.localhost}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+volumes:
+  data1-1:
+  data1-2:

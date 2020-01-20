@@ -3,8 +3,16 @@
 const path = require("path");
 const cp = require("child_process");
 const fs = require("fs");
+const Minio = require('minio');
+var minioClient = new Minio.Client({
+  endPoint: process.env.MINIO_URL,
+  port: 9000,
+  useSSL: false,
+  accessKey: process.env.MINIO_ACCESS_KEY,
+  secretKey: process.env.MINIO_SECRET_KEY
+});
 
-module.exports = (req, context) => {
+module.exports = async (req, context) => {
   let err;
   const tmpId = uuid();
   const tmpDir = path.join("/tmp", "input", tmpId);
@@ -83,15 +91,25 @@ module.exports = (req, context) => {
   const buildOutput = cp.spawnSync("yarn", ["run", "build"], {
     cwd: tmpDir
 	});
-	const output = `
-${yarnInstallOutput.output.toString()}
+  
+  let url = ''
+  // send the files to minio
+  try {
+  if (!await minioClient.bucketExists('bucket')) {
+    await minioClient.makeBucket('bucket')
+  }
+  await minioClient.fPutObject('bucket', tmpId, path.join(tmpDir, 'bundle.js'));
+  url = await minioClient.presignedGetObject('bucket', tmpId, 24*60*60);
+  } catch(error) {
+    console.error(error)
+  }
 
-${buildOutput.output.toString()}
-	`
+	const output = `${url}`
+
   // return output
   context.status(200).succeed(output);
   // clean up tmp file
-  // fs.unlinkSync(tmpFile)
+  fs.unlinkSync(tmpFile)
 };
 
 const uuid = () => {
