@@ -3,7 +3,7 @@
 const path = require("path");
 const cp = require("child_process");
 const fs = require("fs");
-const Minio = require('minio');
+const Minio = require("minio");
 var minioClient = new Minio.Client({
   endPoint: process.env.MINIO_URL,
   port: 9000,
@@ -49,67 +49,69 @@ module.exports = async (req, context) => {
     path.join(tmpDir, "bundle.js")
   );
   // load base package.json
-  let basePackage = JSON.parse(fs.readFileSync(
-    path.join(tmpDir, "package.json"),
-    "utf8"
-	));
-  const dependencies = packages.split(",")
-		.map(i => i.trim())
-		.reduce((total, current, index) => {
-			let value;
-			// if this is the first iteration then we set up the total object
-			// looks dumb but it's a hack
-			if (index === 1) {
-				value = {}
-				value[total] = ""
-				value[current] = ""
-			}
-			else {
-				value[current] = ""
-			}
-			return value;
-		})
+  let basePackage = JSON.parse(
+    fs.readFileSync(path.join(tmpDir, "package.json"), "utf8")
+  );
+  const dependencies = packages
+    .split(",")
+    .map(i => i.trim())
+    .reduce((total, current, index) => {
+      let value;
+      // if this is the first iteration then we set up the total object
+      // looks dumb but it's a hack
+      if (index === 1) {
+        value = {};
+        value[total] = "";
+        value[current] = "";
+      } else {
+        value[current] = "";
+      }
+      return value;
+    });
   const newPackage = Object.assign({}, basePackage, {
-    dependencies 
-	});
-	console.log(`writing new package.json for ${tmpId}`, newPackage)
+    dependencies
+  });
+  console.log(`writing new package.json for ${tmpId}`, newPackage);
   fs.writeFileSync(
     path.join(tmpDir, "package.json"),
     JSON.stringify(newPackage, null, 2)
-	);
-
-	console.log(`writing new bundle.js for ${tmpId}`)
-	const importsBundle = `${packages.split(",").map(i => `import("${i}"); `)}`.replace(',', '');
-  fs.writeFileSync(
-		path.join(tmpDir, "bundle.js"),
-		importsBundle
   );
+
+  console.log(`writing new bundle.js for ${tmpId}`);
+  const importsBundle = `${packages
+    .split(",")
+    .map(i => `import("${i}"); `)}`.replace(",", "");
+  fs.writeFileSync(path.join(tmpDir, "bundle.js"), importsBundle);
   // yarn install
   const yarnInstallOutput = cp.spawnSync("yarn", {
     cwd: tmpDir
-	});
+  });
   const buildOutput = cp.spawnSync("yarn", ["run", "build"], {
     cwd: tmpDir
-	});
-  
-  let url = ''
+  });
+
+  let url = "";
   // send the files to minio
   try {
-  if (!await minioClient.bucketExists('bucket')) {
-    await minioClient.makeBucket('bucket')
-  }
-  await minioClient.fPutObject('bucket', tmpId, path.join(tmpDir, 'bundle.js'));
-  url = await minioClient.presignedGetObject('bucket', tmpId, 24*60*60);
-  } catch(error) {
-    console.error(error)
+    if (!(await minioClient.bucketExists("bucket"))) {
+      await minioClient.makeBucket("bucket");
+    }
+    await minioClient.fPutObject(
+      "bucket",
+      tmpId,
+      path.join(tmpDir, "bundle.js")
+    );
+    url = await minioClient.presignedGetObject("bucket", tmpId, 24 * 60 * 60);
+  } catch (error) {
+    console.error(error);
   }
 
-	const output = `${url}`
+  const output = `${url}`;
 
   // return output
   context.status(200).succeed(output);
   // clean up tmp file
-  fs.unlinkSync(tmpFile)
+  fs.unlinkSync(tmpDir);
 };
 
 const uuid = () => {

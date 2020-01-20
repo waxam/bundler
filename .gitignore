@@ -1,3 +1,4 @@
 .config
 .npm
 node_modules
+.ash_history
