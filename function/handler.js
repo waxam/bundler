@@ -21,6 +21,23 @@ module.exports = async (req, context) => {
   const body = req.body;
   const { packages } = req.query;
 
+  // if (!packages) {
+  //   context.status(422).succeed('asdf');
+  // }
+
+  let dependenciesArray = packages.split(",").map(i => {
+    let object = {};
+    let depArray = i.split(":");
+    let depName = depArray[0];
+    let depVersion = depArray[1] || "";
+    object[depName] = depVersion;
+    return object;
+  });
+  let dependencies = Object.assign({});
+  for (let dep of dependenciesArray) {
+    dependencies = {...dependencies, ...dep}
+  }
+
   // ensure tmp dir is there
   if (!fs.existsSync("/tmp/input")) {
     fs.mkdirSync("/tmp/input");
@@ -52,22 +69,7 @@ module.exports = async (req, context) => {
   let basePackage = JSON.parse(
     fs.readFileSync(path.join(tmpDir, "package.json"), "utf8")
   );
-  const dependencies = packages
-    .split(",")
-    .map(i => i.trim())
-    .reduce((total, current, index) => {
-      let value;
-      // if this is the first iteration then we set up the total object
-      // looks dumb but it's a hack
-      if (index === 1) {
-        value = {};
-        value[total] = "";
-        value[current] = "";
-      } else {
-        value[current] = "";
-      }
-      return value;
-    });
+
   const newPackage = Object.assign({}, basePackage, {
     dependencies
   });
@@ -83,10 +85,15 @@ module.exports = async (req, context) => {
     .map(i => `import("${i}"); `)}`.replace(",", "");
   fs.writeFileSync(path.join(tmpDir, "bundle.js"), importsBundle);
   // yarn install
-  const yarnInstallOutput = cp.spawnSync("yarn", {
+  cp.spawnSync("yarn", {
     cwd: tmpDir
   });
-  const buildOutput = cp.spawnSync("yarn", ["run", "build"], {
+  // run build
+  cp.spawnSync("yarn", ["run", "build"], {
+    cwd: tmpDir
+  });
+  // zip it
+  cp.spawnSync("zip", ["-r", `dist-${tmpId}.zip`, "dist/"], {
     cwd: tmpDir
   });
 
@@ -99,7 +106,7 @@ module.exports = async (req, context) => {
     await minioClient.fPutObject(
       "bucket",
       tmpId,
-      path.join(tmpDir, "bundle.js")
+      path.join(tmpDir, `dist-${tmpId}.zip`)
     );
     url = await minioClient.presignedGetObject("bucket", tmpId, 24 * 60 * 60);
   } catch (error) {
