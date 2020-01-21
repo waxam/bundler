@@ -12,6 +12,9 @@ var minioClient = new Minio.Client({
   secretKey: process.env.MINIO_SECRET_KEY
 });
 
+// write lock file for healthcheck
+cp.spawn('touch', '/tmp/.lock');
+
 module.exports = async (req, context) => {
   let err;
   const tmpId = uuid();
@@ -20,6 +23,7 @@ module.exports = async (req, context) => {
   // get body
   const body = req.body;
   const { packages } = req.query;
+  console.log(req.body)
 
   // if (!packages) {
   //   context.status(422).succeed('asdf');
