@@ -130,7 +130,7 @@ module.exports = async (req, context) => {
     // yarn install
     console.log("yarn start");
     await new Promise((res, rej) => {
-      cp.spawn("yarn", ["install", "--verbose"], {
+      cp.spawn("yarn", ["install"], {
         cwd: tmpDir
       }).stdout.on("data", data => {
         console.log(data.toString());
@@ -150,9 +150,20 @@ module.exports = async (req, context) => {
       });
     });
 
+    console.log("remove node_modules directory");
+    await new Promise((res, rej) => {
+      cp.spawn("rm", ["-rf", "node_modules"], {
+        cwd: tmpDir
+      }).stdout.on("data", data => {
+        console.log(data.toString());
+      }).on('close', () => {
+        res()
+      });
+    });
+
     console.log("zip it");
     await new Promise((res, rej) => {
-      cp.spawn("zip", ["-r", `build-${tmpId}.zip`, "build/"], {
+      cp.spawn("zip", ["-r", `build-${tmpId}.zip`, "."], {
         cwd: tmpDir
       }).stdout.on("data", data => {
         console.log(data.toString());

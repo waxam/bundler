@@ -7,7 +7,7 @@ services:
       - 3000:3000
     volumes:
       - /home/app/service/node_modules
-      - /home/app/service/unbundled-webcomponents/node_modules
+      - /home/app/unbundled-webcomponents/node_modules
       - .:/home/app/service
     command: node ./index.js
     environment:

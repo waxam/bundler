@@ -47,9 +47,12 @@ WORKDIR /home/app/service
 
 # chmod for tmp is for a buildkit issue (@alexellis)
 RUN chown app:app -R /home/app \
+    && chown app:app -R /usr/local/share/.cache/ \
     && chmod 777 /tmp
 
 USER app
+
+RUN ln -s /usr/local/share/.cache /home/app/.cache
 
 ENV cgi_headers="true"
 ENV fprocess="node index.js"
