@@ -14,10 +14,16 @@ WORKDIR /root/
 # Turn down the verbosity to default level.
 ENV NPM_CONFIG_LOGLEVEL warn
 
-RUN mkdir -p /home/app
+RUN mkdir -p /home/app/service
+
+# COPY function node packages and install, adding this as a separate
+# entry allows caching of npm install
+WORKDIR /home/app/unbundled-webcomponents
+COPY unbundled-webcomponents ./
+RUN yarn || :
 
 # Wrapper/boot-strapper
-WORKDIR /home/app
+WORKDIR /home/app/service
 COPY package.json ./
 
 # This ordering means the npm installation is cached for the outer function handler.
@@ -28,22 +34,16 @@ COPY index.js ./
 
 # COPY function node packages and install, adding this as a separate
 # entry allows caching of npm install
-WORKDIR /home/app/function
+WORKDIR /home/app/service/function
 COPY function/*.json ./
 RUN yarn || :
 
-# COPY function node packages and install, adding this as a separate
-# entry allows caching of npm install
-WORKDIR /home/app/openwc
-COPY openwc ./
-RUN yarn || :
-
 # COPY  files and folders
-WORKDIR /home/app/function
+WORKDIR /home/app/service/function
 COPY function/ ./
 
 # Set correct permissions to use non root user
-WORKDIR /home/app/
+WORKDIR /home/app/service
 
 # chmod for tmp is for a buildkit issue (@alexellis)
 RUN chown app:app -R /home/app \
@@ -56,9 +56,9 @@ ENV fprocess="node index.js"
 ENV mode="http"
 ENV upstream_url="http://127.0.0.1:3000"
 
-ENV exec_timeout="10s"
-ENV write_timeout="15s"
-ENV read_timeout="15s"
+ENV exec_timeout="90s"
+ENV write_timeout="30s"
+ENV read_timeout="30s"
 
 HEALTHCHECK --interval=3s CMD [ -e /tmp/.lock ] || exit 1
 

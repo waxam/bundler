@@ -1,5 +1,8 @@
 .config
 .npm
 node_modules
+.ash_history
+.cache
 build
 template
+.yarn
