@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const { updateBuildStatus } = require("./services.js");
 
 async function main() {
   const app = express();
@@ -11,7 +12,10 @@ async function main() {
     const { event, trigger } = req.body;
 
     if (trigger.name === "generate-build") {
-      // update build status
+      updateBuildStatus({ id: event.data.new.id, status: "RECIEVED" });
+      setTimeout(() => {
+        updateBuildStatus({ id: event.data.new.id, status: "COMPLETED" });
+      }, 9000)
     }
     res.status(200);
     res.send("ok");

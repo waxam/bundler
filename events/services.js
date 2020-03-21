@@ -1,6 +1,7 @@
 const fetch = require("node-fetch");
+const { updateBuildStatus } = require("./queries.js");
 
-exports.createBuild = async (status) =>
+exports.updateBuildStatus = async ({id, status}) =>
   fetch("http://host.docker.internal:8080/v1/graphql", {
     method: "POST",
     headers: {
@@ -10,9 +11,10 @@ exports.createBuild = async (status) =>
     body: JSON.stringify({
       // use loc.source.body to get the string version of the gql statement
       // this will hopefully be replaced by .toString() in graphql-tag module soon.
-      query: createBuild.loc.source.body,
+      query: updateBuildStatus.loc.source.body,
       variables: {
-        status: status
+        id,
+        status
       }
     })
   })

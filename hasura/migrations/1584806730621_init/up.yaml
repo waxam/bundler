@@ -10,7 +10,7 @@
           interval_sec: 10
           num_retries: 0
           timeout_sec: 60
-        webhook: http://localhost:8081
+        webhook: http://host.docker.internal:8081/events
       table:
         name: builds
         schema: public
