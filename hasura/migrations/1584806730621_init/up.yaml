@@ -18,5 +18,11 @@
       table:
         name: builds_statuses
         schema: public
+    - table:
+        name: roles
+        schema: public
+    - table:
+        name: users
+        schema: public
     version: 2
   type: replace_metadata

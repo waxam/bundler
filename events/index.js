@@ -11,6 +11,7 @@ async function main() {
     const { event, trigger } = req.body;
 
     if (trigger.name === "generate-build") {
+      // update build status
     }
     res.status(200);
     res.send("ok");
