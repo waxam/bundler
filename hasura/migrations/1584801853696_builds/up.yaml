@@ -1,7 +1,0 @@
-- args:
-    tables:
-    - table:
-        name: builds
-        schema: public
-    version: 2
-  type: replace_metadata
