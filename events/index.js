@@ -1,22 +1,22 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { updateBuildStatus } = require("./services.js");
+const { updateBuildStatus, generateBuild } = require("./services.js");
 
 async function main() {
   const app = express();
   app.use(cors());
   app.use(bodyParser.json());
 
-  app.post("/events", (req, res) => {
+  app.post("/events", async (req, res) => {
     const { event, trigger } = req.body;
 
     if (trigger.name === "generate-build") {
       updateBuildStatus({ id: event.data.new.id, status: "RECIEVED" });
-      setTimeout(() => {
-        updateBuildStatus({ id: event.data.new.id, status: "COMPLETED" });
-      }, 9000)
+      const output = await generateBuild({ dependencies: event.data.new.dependencies });
+      updateBuildStatus({ id: event.data.new.id, status: "COMPLETED", output });
     }
+
     res.status(200);
     res.send("ok");
   });
