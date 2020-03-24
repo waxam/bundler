@@ -30,12 +30,13 @@ module.exports = async (req, context) => {
   const tmpDir = path.join("/tmp", "input", tmpId);
 
   // get body
-  const body = req.body;
+  const { dependencies } = req.body;
   const { packages } = req.query;
-  console.log("packages:", packages);
 
-  if (!packages) {
-    return context.status(422).succeed("asdf");
+  if (dependencies) {
+  }
+  else if (!packages) {
+    return context.status(422).succeed("No packages defined");
   } else if (!packages.length > 0) {
     return context.status(422).succeed("No packages defined");
   } else {
