@@ -5,6 +5,8 @@ services:
     build: ./events
     ports:
       - 8081:4000
+    environment_file:
+      - .env
     volumes:
       - ./events:/home/node/app
       - /home/node/app/node_modules

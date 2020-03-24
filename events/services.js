@@ -1,5 +1,6 @@
 const fetch = require("node-fetch");
 const { updateBuildStatus } = require("./queries.js");
+const BUNDLER_SERVICE_FQDN = process.env.BUNDLER_SERVICE_ENDPOINT || "http://host.docker.internal:3000"
 
 exports.updateBuildStatus = async ({ id, status, output }) =>
   fetch("http://host.docker.internal:8080/v1/graphql", {
@@ -23,7 +24,7 @@ exports.updateBuildStatus = async ({ id, status, output }) =>
 
 exports.generateBuild = async ({ dependencies }) => {
   const paramsString = this.generateBuildQueryParams({ dependencies });
-  return fetch(`http://host.docker.internal:3000${paramsString}`)
+  return fetch(`${BUNDLER_SERVICE_FQDN}${paramsString}`)
     .then(res => res.text());
 };
 
