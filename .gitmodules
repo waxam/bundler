@@ -1,0 +1,3 @@
+[submodule "unbundled-webcomponents"]
+	path = unbundled-webcomponents
+	url = https://github.com/elmsln/unbundled-webcomponents.git
