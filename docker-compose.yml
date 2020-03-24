@@ -10,13 +10,8 @@ services:
       - /home/app/unbundled-webcomponents/node_modules
       - .:/home/app/service
     command: node ./index.js
-    environment:
-      # https://docs.docker.com/docker-for-mac/networking/
-      # Use host.docker.internal
-      # Add the following to your /etc/hosts file:
-      # 127.0.0.1 host.docker.internal
-      miniourl: host.docker.internal
-      minioaccesskey: minioadmin
+    env_file: 
+      - env.yml
     depends_on: 
       - minio
 
@@ -27,9 +22,8 @@ services:
       - data1-2:/data2
     ports:
       - "9000:9000"
-    environment:
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
+    env_file: 
+      - env.yml
     command: server /data1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
