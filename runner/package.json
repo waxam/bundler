@@ -14,5 +14,8 @@
     "express": "^4.16.2",
     "minio": "^7.0.13",
     "copy-dir": "^1.2.0"
+  },
+  "resolutions": {
+    "minimist": "^1.2.2"
   }
 }
