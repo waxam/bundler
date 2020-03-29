@@ -15,10 +15,10 @@ console.log(process.env.MINIO_SECRECT_KEY);
 
 var minioClient = new Minio.Client({
   endPoint: process.env.miniourl,
-  port: 9000,
+  port: 80,
   useSSL: false,
   accessKey: process.env.minioaccesskey,
-  secretKey: process.env.minioaccesskey
+  secretKey: process.env.miniosecretkey
 });
 
 // write lock file for healthcheck

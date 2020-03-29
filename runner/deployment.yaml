@@ -28,8 +28,13 @@ spec:
         - name: minioaccesskey
           valueFrom:
             secretKeyRef:
-              name: bundler-service
-              key: minioaccesskey
+              name: minio
+              key: accesskey
+        - name: miniosecretkey
+          valueFrom:
+            secretKeyRef:
+              name: minio
+              key: secretkey
         ports:
         - containerPort: 3000
         resources: {}

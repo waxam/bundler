@@ -13,20 +13,18 @@ async function main() {
   app.post("/events", async (req, res) => {
     const { event, trigger } = req.body;
 
+
     if (trigger.name === "generate-build") {
+      res.status(200);
+      res.send("ok");
       updateBuildStatus({ id: event.data.new.id, status: "RECIEVED" });
       const output = await generateBuild({ dependencies: event.data.new.dependencies });
       updateBuildStatus({ id: event.data.new.id, status: "COMPLETED", output });
     }
-    res.status(200);
-    res.send("building...")
-    //   res.status(200);
-    //   res.send("ok");
-    // } catch (error) {
-    //   res.status(503);
-    //   res.send("event trigger.name not defined.", error);
-    // }
-
+    else {
+      res.status(503);
+      res.send("event trigger.name not defined.");
+    }
   });
 
   app.listen(4000, () => {
