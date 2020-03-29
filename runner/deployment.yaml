@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   labels:
     app: runner
-    hasuraService: custom
   name: runner
   namespace: default
 spec:
@@ -21,15 +20,16 @@ spec:
         imagePullPolicy: Always
         name: runner
         env:
-        - name: BUNDLER_SERVICE_FQDN
-          value: exec.bundler.heymp.com
-        - name: BUNDLER_MANAGER_ENDPOINT_FQDN
-          value: http://bundler.heymp.com/v1/graphql
-        - name: HASURA_GRAPHQL_ADMIN_SECRET
+        - name: miniourl
           valueFrom:
             secretKeyRef:
               name: bundler-service
-              key: HASURA_GRAPHQL_ADMIN_SECRET
+              key: miniourl
+        - name: minioaccesskey
+          valueFrom:
+            secretKeyRef:
+              name: bundler-service
+              key: minioaccesskey
         ports:
         - containerPort: 3000
         resources: {}
@@ -60,7 +60,7 @@ spec:
     name: runner
   spec:
     rules:
-    - host: service.bundler.heymp.com
+    - host: runner.bundler.heymp.com
       http:
         paths:
         - backend:

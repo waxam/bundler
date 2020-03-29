@@ -46,9 +46,10 @@ COPY function/ ./
 WORKDIR /home/app/service
 
 # chmod for tmp is for a buildkit issue (@alexellis)
-RUN chown app:app -R /home/app \
-    && chown app:app -R /usr/local/share/.cache/ \
-    && chmod 777 /tmp
+RUN chmod 777 /tmp
+# RUN chown app:app -R /home/app \
+#     && chown app:app -R /usr/local/share/.cache/ \
+#     && chmod 777 /tmp
 
 USER app
 
