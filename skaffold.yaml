@@ -1,0 +1,12 @@
+apiVersion: skaffold/v2beta1
+kind: Config
+metadata:
+  name: bundler-service-manager
+build:
+  artifacts:
+  - image: heymp/bundler-service-events
+    context: events
+deploy:
+  kubectl:
+    manifests:
+    - events/deployment.yaml

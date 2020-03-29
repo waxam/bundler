@@ -1,0 +1,56 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: bundler-service-manager-deployment
+spec:
+  selector:
+    matchLabels:
+      app: bundler-service-manager
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: bundler-service-manager
+    spec:
+      containers:
+      - name: bundler-service-manager
+        image: elmsln/haxcms
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: bundler-service-manager-service
+  labels:
+    app: bundler-service-manager
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  - port: 443
+    protocol: TCP
+    name: https
+  selector:
+    app: bundler-service-manager
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: bundler-service-manager-ingress
+spec:
+  rules:
+  - host: haxcms.bundler.heymp.com
+    http:
+      paths:
+      - backend:
+          serviceName: bundler-service-manager-service
+          servicePort: 80

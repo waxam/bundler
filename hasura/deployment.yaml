@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hasura
+    hasuraService: custom
+  name: hasura
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hasura
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: hasura
+    spec:
+      containers:
+        - image: hasura/graphql-engine:v1.1.1
+          imagePullPolicy: IfNotPresent
+          name: hasura
+          env:
+            - name: HASURA_GRAPHQL_ADMIN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: bundler-service
+                  key: HASURA_GRAPHQL_ADMIN_SECRET
+            - name: HASURA_GRAPHQL_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: bundler-service
+                  key: HASURA_GRAPHQL_DATABASE_URL
+            - name: HASURA_GRAPHQL_ENABLE_CONSOLE
+              value: "true"
+          ports:
+            - containerPort: 8080
+          resources: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hasura
+  labels:
+    app: hasura
+  namespace: default
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    app: hasura
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hasura
+spec:
+  rules:
+    - host: bundler.heymp.com
+      http:
+        paths:
+          - backend:
+              serviceName: hasura
+              servicePort: 80

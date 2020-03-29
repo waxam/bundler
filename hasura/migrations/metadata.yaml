@@ -1,0 +1,50 @@
+version: 2
+tables:
+- table:
+    schema: public
+    name: builds
+  object_relationships:
+  - name: builds_status
+    using:
+      foreign_key_constraint_on: status
+  event_triggers:
+  - name: generate-build
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook: http://host.docker.internal:8081/events
+- table:
+    schema: public
+    name: builds_statuses
+  is_enum: true
+  array_relationships:
+  - name: builds
+    using:
+      foreign_key_constraint_on:
+        column: status
+        table:
+          schema: public
+          name: builds
+- table:
+    schema: public
+    name: roles
+  array_relationships:
+  - name: users
+    using:
+      foreign_key_constraint_on:
+        column: role
+        table:
+          schema: public
+          name: users
+- table:
+    schema: public
+    name: users
+  object_relationships:
+  - name: roleByRole
+    using:
+      foreign_key_constraint_on: role

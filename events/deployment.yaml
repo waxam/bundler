@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: events
+    hasuraService: custom
+  name: events
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: events
+  template:
+    metadata:
+      labels:
+        app: events
+    spec:
+      containers:
+      - image: heymp/bundler-service-events
+        imagePullPolicy: Always
+        name: events
+        env:
+        - name: BUNDLER_SERVICE_FQDN
+          value: exec.bundler.heymp.com
+        - name: BUNDLER_MANAGER_ENDPOINT_FQDN
+          value: http://bundler.heymp.com/v1/graphql
+        - name: HASURA_GRAPHQL_ADMIN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: bundler-service
+              key: HASURA_GRAPHQL_ADMIN_SECRET
+        ports:
+        - containerPort: 4000
+        resources: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: events
+  labels:
+    app: events
+  namespace: default
+spec:
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 4000
+  selector:
+    app: events
+
+---
+
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: events
+  spec:
+    rules:
+    - host: events.bundler.heymp.com
+      http:
+        paths:
+        - backend:
+            serviceName: events
+            servicePort: 80
