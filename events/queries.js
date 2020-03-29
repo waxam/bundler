@@ -7,3 +7,11 @@ exports.updateBuildStatus = gql`
     }
   }
 `;
+
+exports.insertBuild = gql`
+  mutation createBuild($dependencies: jsonb) {
+    insert_builds(objects: {dependencies: $dependencies}) {
+      affected_rows
+    }
+  }
+`
