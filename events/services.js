@@ -3,11 +3,12 @@ const { updateBuildStatus } = require("./queries.js");
 const BUNDLER_SERVICE_FQDN = process.env.BUNDLER_SERVICE_ENDPOINT || "http://host.docker.internal:3000"
 const BUNDLER_MANAGER_ENDPOINT_FQDN = process.env.BUNDLER_MANAGER_ENDPOINT_FQDN || "http://host.docker.internal:8080/v1/graphql"
 
-exports.updateBuildStatus = async ({ id, status, output }) =>
+exports.updateBuildStatus = async ({ id, status, output = null }) =>
   fetch(BUNDLER_MANAGER_ENDPOINT_FQDN, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "x-hasura-admin-secret": process.env.HASURA_GRAPHQL_ADMIN_SECRET,
       Accept: "*/*"
     },
     body: JSON.stringify({
@@ -15,7 +16,9 @@ exports.updateBuildStatus = async ({ id, status, output }) =>
       // this will hopefully be replaced by .toString() in graphql-tag module soon.
       query: updateBuildStatus.loc.source.body,
       variables: {
-        status: status
+        status: status,
+        id,
+        output
       }
     })
   })

@@ -25,6 +25,11 @@ spec:
           value: exec.bundler.heymp.com
         - name: BUNDLER_MANAGER_ENDPOINT_FQDN
           value: http://bundler.heymp.com/v1/graphql
+        - name: HASURA_GRAPHQL_ADMIN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: bundler-service
+              key: HASURA_GRAPHQL_ADMIN_SECRET
         ports:
         - containerPort: 4000
         resources: {}
