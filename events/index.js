@@ -15,8 +15,8 @@ async function main() {
 
     if (trigger.name === "generate-build") {
       updateBuildStatus({ id: event.data.new.id, status: "RECIEVED" });
-      // const output = await generateBuild({ dependencies: event.data.new.dependencies });
-      // updateBuildStatus({ id: event.data.new.id, status: "COMPLETED", output });
+      const output = await generateBuild({ dependencies: event.data.new.dependencies });
+      updateBuildStatus({ id: event.data.new.id, status: "COMPLETED", output });
     }
     res.status(200);
     res.send("building...")
