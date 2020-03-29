@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: runner
+    hasuraService: custom
+  name: runner
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: runner
+  template:
+    metadata:
+      labels:
+        app: runner
+    spec:
+      containers:
+      - image: heymp/bundler-service-runner
+        imagePullPolicy: Always
+        name: runner
+        env:
+        - name: BUNDLER_SERVICE_FQDN
+          value: exec.bundler.heymp.com
+        - name: BUNDLER_MANAGER_ENDPOINT_FQDN
+          value: http://bundler.heymp.com/v1/graphql
+        - name: HASURA_GRAPHQL_ADMIN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: bundler-service
+              key: HASURA_GRAPHQL_ADMIN_SECRET
+        ports:
+        - containerPort: 3000
+        resources: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: runner
+  labels:
+    app: runner
+  namespace: default
+spec:
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  selector:
+    app: runner
+
+---
+
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: runner
+  spec:
+    rules:
+    - host: service.bundler.heymp.com
+      http:
+        paths:
+        - backend:
+            serviceName: runner
+            servicePort: 80

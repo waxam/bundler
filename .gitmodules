@@ -1,0 +1,3 @@
+[submodule "runner/unbundled-webcomponents"]
+	path = runner/unbundled-webcomponents
+	url = https://github.com/elmsln/unbundled-webcomponents.git
