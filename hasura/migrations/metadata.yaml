@@ -17,7 +17,7 @@ tables:
       num_retries: 0
       interval_sec: 10
       timeout_sec: 60
-    webhook: http://host.docker.internal:8081/events
+    webhook_from_env: EVENTS_ENDPOINT
 - table:
     schema: public
     name: builds_statuses

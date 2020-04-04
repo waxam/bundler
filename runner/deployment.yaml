@@ -16,7 +16,7 @@ spec:
         app: runner
     spec:
       containers:
-      - image: heymp/bundler-service-runner
+      - image: irreversiblespec/bundler-service-runner
         imagePullPolicy: Always
         name: runner
         env:

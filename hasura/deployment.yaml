@@ -34,6 +34,8 @@ spec:
                   key: HASURA_GRAPHQL_DATABASE_URL
             - name: HASURA_GRAPHQL_ENABLE_CONSOLE
               value: "true"
+            - name: EVENTS_ENDPOINT
+              value: "http://events.bundler.heymp.com/events"
           ports:
             - containerPort: 8080
           resources: {}

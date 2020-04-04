@@ -13,7 +13,6 @@ async function main() {
   app.post("/events", async (req, res) => {
     const { event, trigger } = req.body;
 
-
     if (trigger.name === "generate-build") {
       res.status(200);
       res.send("ok");

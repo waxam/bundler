@@ -17,7 +17,7 @@ spec:
         app: events
     spec:
       containers:
-      - image: heymp/bundler-service-events
+      - image: irreversiblespec/bundler-service-events
         imagePullPolicy: Always
         name: events
         env:

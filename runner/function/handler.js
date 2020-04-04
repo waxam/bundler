@@ -6,13 +6,6 @@ const fs = require("fs");
 const Minio = require("minio");
 const copydir = require("copy-dir");
 
-console.log(process.env.miniourl);
-console.log(process.env.minioaccesskey);
-console.log(process.env.miniosecretkey);
-console.log(process.env.MINIO_URL);
-console.log(process.env.MINIO_ACCESS_KEY);
-console.log(process.env.MINIO_SECRECT_KEY);
-
 var minioClient = new Minio.Client({
   endPoint: process.env.miniourl,
   port: 80,
@@ -117,6 +110,7 @@ module.exports = async (req, context) => {
     const newPackage = Object.assign({}, basePackage, {
       dependencies
     });
+    console.log('newPackage:', newPackage)
     fs.writeFileSync(
       path.join(tmpDir, "package.json"),
       JSON.stringify(newPackage, null, 2)
@@ -125,7 +119,10 @@ module.exports = async (req, context) => {
     console.log(`writing new bundle.js for ${tmpId}`);
     const importsBundle = `${packages
       .split(",")
-      .map(i => `import("${i}"); `)}`.replace(",", "");
+      .map(i => i.split(":")[0])
+      .map(i => `import("${i}"); `)}`
+      .replace(",", "");
+    console.log('importsBundle:', importsBundle)
     fs.writeFileSync(path.join(tmpDir, "dist", "app.js"), importsBundle);
 
     // yarn install
