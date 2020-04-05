@@ -1,0 +1,21 @@
+{
+  "name": "bundler-portal",
+  "version": "0.0.0",
+  "description": "Webcomponent bundler-portal following open-wc recommendations",
+  "author": "bundler-portal",
+  "license": "MIT",
+  "scripts": {
+    "start": "es-dev-server --app-index index.html --node-resolve --watch"
+  },
+  "dependencies": {
+    "graphql-tag": "^2.10.3",
+    "lit-element": "^2.0.1",
+    "lit-html": "^1.0.0",
+    "mobx": "^5.15.4",
+    "@adobe/lit-mobx": "^0.0.3",
+    "@vaadin/vaadin-grid": "^5.5.3"
+  },
+  "devDependencies": {
+    "es-dev-server": "^1.5.0"
+  }
+}
