@@ -1,6 +1,6 @@
 import { observable, decorate, computed, action, autorun } from "mobx";
 import { wsClient, client } from "./client.js";
-import { builds, buildsSubscription } from "./queries.js";
+import { builds, buildsSubscription, insertBuild } from "./queries.js";
 
 class Store {
   constructor() {
@@ -11,6 +11,9 @@ class Store {
 
   createBuild() {
     this.showNotification({ text: "Creating Build" });
+    client({
+      query: insertBuild
+    })
   }
 
   showNotification({ text }) {
@@ -46,6 +49,7 @@ decorate(Store, {
 
 export const store = new Store();
 
+// Set up the web socket connection
 wsClient().then((socket) => {
   // Subscript to my builds
   socket.send(
