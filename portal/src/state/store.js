@@ -5,11 +5,43 @@ import { builds, buildsSubscription } from "./queries.js";
 class Store {
   constructor() {
     this.builds = [];
+    this.newBuild = null;
+    this.notificationEl = null;
+  }
+
+  createBuild() {
+    this.showNotification({ text: "Creating Build" });
+  }
+
+  showNotification({ text }) {
+    if (this.notificationEl) {
+      this.notificationEl.renderer = function(root, owner) {
+        if (root.firstElementChild) {
+          return;
+        }
+        const plainText = window.document.createTextNode(text);
+        const retryBtn = window.document.createElement('vaadin-button');
+
+        retryBtn.textContent = 'Dismiss';
+        retryBtn.setAttribute('theme', 'tertiary');
+        retryBtn.addEventListener('click', function() {
+          owner.close();
+        });
+
+        root.appendChild(plainText);
+        root.appendChild(retryBtn);
+      };
+      this.notificationEl.open();
+    }
   }
 }
 
 decorate(Store, {
   builds: observable,
+  newBuild: observable,
+  createBuild: action,
+  notificationEl: observable,
+  showNotification: action
 });
 
 export const store = new Store();
