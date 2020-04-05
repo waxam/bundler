@@ -12,7 +12,10 @@ class Store {
   createBuild() {
     this.showNotification({ text: "Creating Build" });
     client({
-      query: insertBuild
+      query: insertBuild,
+      variables: {
+        dependencies: "lit-element"
+      }
     })
   }
 

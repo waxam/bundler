@@ -47,14 +47,13 @@ export class BundlerPortal extends MobxLitElement {
 
   firstUpdated() {
     store.notificationEl = this.shadowRoot.querySelector('vaadin-notification');
-    console.log(store.notificationEl)
   }
 
   render() {
     const builds = store.builds.map(build => Object.assign({ ...build, dependencies: JSON.stringify(build.dependencies) }))
     return html`
       <div id="input">
-        <vaadin-text-field label="Dependencies" @input=${(e) => store.newBuild = { dependencies: e.target.value }} value="lit-element:^2"></vaadin-text-field>
+        <!-- <vaadin-text-field label="Dependencies" @change=${(e) => { store.newBuild = { dependencies: e } }}></vaadin-text-field> -->
         <vaadin-button @click=${() => store.createBuild()}>Create Build</vaadin-button>
       </div>
       <vaadin-grid id="grid" .items=${builds}>

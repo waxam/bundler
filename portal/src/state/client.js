@@ -34,7 +34,7 @@ export const wsClient = () =>
     };
   });
 
-export const client = ({ query }) => {
+export const client = ({ query, variables = {} }) => {
   return fetch("http://bundler.heymp.com/v1/graphql", {
     method: "POST",
     headers: {
@@ -42,6 +42,6 @@ export const client = ({ query }) => {
       "content-type": "application/json",
       "x-hasura-admin-secret": "4edb8937cfba4f669881b3f2a71d86f5",
     },
-    body: JSON.stringify({ query: query.loc.source.body }),
+    body: JSON.stringify({ query: query.loc.source.body, variables }),
   }).then((res) => res.json());
 };
