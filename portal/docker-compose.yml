@@ -1,0 +1,8 @@
+version: '3'
+services:
+  prod:
+    build: .
+    ports: 
+      - 81:80
+    env_file:
+      - .env

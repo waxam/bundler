@@ -50,10 +50,10 @@ export class BundlerPortal extends MobxLitElement {
   }
 
   render() {
+    // <vaadin-text-field label="Dependencies" @change=${(e) => { store.newBuild = { dependencies: e } }}></vaadin-text-field>
     const builds = store.builds.map(build => Object.assign({ ...build, dependencies: JSON.stringify(build.dependencies) }))
     return html`
       <div id="input">
-        <!-- <vaadin-text-field label="Dependencies" @change=${(e) => { store.newBuild = { dependencies: e } }}></vaadin-text-field> -->
         <vaadin-button @click=${() => store.createBuild()}>Create Build</vaadin-button>
       </div>
       <vaadin-grid id="grid" .items=${builds}>

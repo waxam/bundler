@@ -8,7 +8,7 @@ export const wsClient = () =>
     // let other calls to this function know that we are already connecting.
     _wsClient = "initializing";
     const socket = new WebSocket(
-      window.env.BUNDLER_ENDPOINT_WS,
+      window.__env.BUNDLER_ENDPOINT_WS,
       "graphql-ws"
     );
     socket.onopen = () => {
@@ -20,7 +20,7 @@ export const wsClient = () =>
           payload: {
             headers: {
               "content-type": "application/json",
-              "x-hasura-admin-secret": window.env.HASURA_ADMIN_SECRET,
+              "x-hasura-admin-secret": window.__env.HASURA_ADMIN_SECRET,
             },
           },
         })
@@ -35,12 +35,12 @@ export const wsClient = () =>
   });
 
 export const client = ({ query, variables = {} }) => {
-  return fetch(window.env.BUNDLER_ENDPOINT_HTTP, {
+  return fetch(window.__env.BUNDLER_ENDPOINT_HTTP, {
     method: "POST",
     headers: {
       "accept": "application/json",
       "content-type": "application/json",
-      "x-hasura-admin-secret": window.env.HASURA_ADMIN_SECRET
+      "x-hasura-admin-secret": window.__env.HASURA_ADMIN_SECRET
     },
     body: JSON.stringify({ query: query.loc.source.body, variables }),
   }).then((res) => res.json());

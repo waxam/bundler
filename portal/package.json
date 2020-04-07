@@ -5,7 +5,9 @@
   "author": "bundler-portal",
   "license": "MIT",
   "scripts": {
-    "start": "es-dev-server --app-index index.html --node-resolve --watch"
+    "start": "es-dev-server --app-index index.html --node-resolve --watch",
+    "start:build": "es-dev-server --root-dir dist --app-index index.html --open --compatibility none",
+    "build": "rimraf dist && rollup -c rollup.config.js"
   },
   "dependencies": {
     "graphql-tag": "^2.10.3",
@@ -19,6 +21,9 @@
     "@vaadin/vaadin-notification": "^1.4.0"
   },
   "devDependencies": {
-    "es-dev-server": "^1.5.0"
+    "es-dev-server": "^1.5.0",
+    "@open-wc/building-rollup": "^0.21.0",
+    "rimraf": "^2.6.3",
+    "rollup": "^1.15.4"
   }
 }
