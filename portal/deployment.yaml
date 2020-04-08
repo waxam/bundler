@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: portal
+    hasuraService: custom
+  name: portal
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portal
+  template:
+    metadata:
+      labels:
+        app: portal
+    spec:
+      containers:
+      - image: irreversiblespec/bundler-service-portal
+        imagePullPolicy: Always
+        name: portal
+        env:
+        - name: CONFIG_VARS
+          value: BUNDLER_ENDPOINT_HTTP,BUNDLER_ENDPOINT_WS,HASURA_ADMIN_SECRET
+        - name: BUNDLER_ENDPOINT_HTTP
+          value: http://bundler.heymp.com/v1/graphql
+        - name: BUNDLER_ENDPOINT_WS
+          value: ws://bundler.heymp.com/v1/graphql
+        - name: HASURA_ADMIN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: bundler-service
+              key: HASURA_GRAPHQL_ADMIN_SECRET
+        ports:
+        - containerPort: 80
+        resources: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: portal
+  labels:
+    app: portal
+  namespace: default
+spec:
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    app: portal
+
+---
+
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: portal
+  spec:
+    rules:
+    - host: portal.bundler.heymp.com
+      http:
+        paths:
+        - backend:
+            serviceName: portal
+            servicePort: 80
