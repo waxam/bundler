@@ -120,8 +120,8 @@ module.exports = async (req, context) => {
     const importsBundle = `${packages
       .split(",")
       .map(i => i.split(":")[0])
-      .map(i => `import("${i}"); `)}`
-      .replace(",", "");
+      .map(i => `import("${i}"); `)
+    }`.split(",").join("");
     console.log('importsBundle:', importsBundle)
     fs.writeFileSync(path.join(tmpDir, "dist", "app.js"), importsBundle);
 

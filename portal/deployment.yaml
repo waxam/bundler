@@ -22,16 +22,11 @@ spec:
         name: portal
         env:
         - name: CONFIG_VARS
-          value: BUNDLER_ENDPOINT_HTTP,BUNDLER_ENDPOINT_WS,HASURA_ADMIN_SECRET
+          value: BUNDLER_ENDPOINT_HTTP,BUNDLER_ENDPOINT_WS
         - name: BUNDLER_ENDPOINT_HTTP
           value: http://bundler.heymp.com/v1/graphql
         - name: BUNDLER_ENDPOINT_WS
           value: ws://bundler.heymp.com/v1/graphql
-        - name: HASURA_ADMIN_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: bundler-service
-              key: HASURA_GRAPHQL_ADMIN_SECRET
         ports:
         - containerPort: 80
         resources: {}

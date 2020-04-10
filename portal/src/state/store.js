@@ -14,7 +14,11 @@ class Store {
     client({
       query: insertBuild,
       variables: {
-        dependencies: "lit-element"
+        dependencies: {
+          "lit-element": "^2",
+          "@adobe/lit-mobx": "^0",
+          "@lrnwebcomponents/lrn-button": "*"
+        }
       }
     })
   }

@@ -38,7 +38,9 @@ exports.generateBuild = async ({ dependencies }) => {
 };
 
 exports.generateBuildQueryParams = ({ dependencies }) => {
+  console.log('dependencies:', dependencies)
   // convert the object to a proper query string, remove quotes and curly braces
   const depString = JSON.stringify(dependencies).replace(/[{}"]/gm, "");
+  console.log('depString:', depString)
   return `?packages=${depString}`;
 };

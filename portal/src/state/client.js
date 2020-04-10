@@ -20,7 +20,7 @@ export const wsClient = () =>
           payload: {
             headers: {
               "content-type": "application/json",
-              "x-hasura-admin-secret": window.__env.HASURA_ADMIN_SECRET,
+              "Authorization": "Bearer user"
             },
           },
         })
@@ -40,7 +40,7 @@ export const client = ({ query, variables = {} }) => {
     headers: {
       "accept": "application/json",
       "content-type": "application/json",
-      "x-hasura-admin-secret": window.__env.HASURA_ADMIN_SECRET
+      "Authorization": "Bearer user"
     },
     body: JSON.stringify({ query: query.loc.source.body, variables }),
   }).then((res) => res.json());

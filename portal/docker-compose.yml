@@ -1,5 +1,15 @@
-version: '3'
+version: '3.4'
 services:
+  dev:
+    build:
+      context: .
+      target: dev
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+      - /app/node_modules
+
   prod:
     build: .
     ports: 
