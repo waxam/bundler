@@ -1,0 +1,21 @@
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - created_at
+      - dependencies
+      - id
+      - output
+      - status
+      - updated_at
+      - user_id
+      computed_fields: []
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+      limit: null
+    role: user
+    table:
+      name: builds
+      schema: public
+  type: create_select_permission

@@ -1,0 +1,15 @@
+- args:
+    permission:
+      allow_upsert: true
+      check: {}
+      columns:
+      - dependencies
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: builds
+      schema: public
+  type: create_insert_permission
