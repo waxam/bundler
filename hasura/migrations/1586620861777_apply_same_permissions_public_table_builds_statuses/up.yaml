@@ -1,0 +1,34 @@
+- args:
+    role: user
+    table:
+      name: builds
+      schema: public
+  type: drop_insert_permission
+- args:
+    permission:
+      allow_upsert: true
+      check: {}
+      columns: []
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: builds
+      schema: public
+  type: create_insert_permission
+- args:
+    permission:
+      allow_upsert: true
+      check: {}
+      columns: []
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: builds_statuses
+      schema: public
+  type: create_insert_permission

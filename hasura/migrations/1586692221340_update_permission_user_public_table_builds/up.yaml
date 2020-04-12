@@ -1,0 +1,23 @@
+- args:
+    role: user
+    table:
+      name: builds
+      schema: public
+  type: drop_insert_permission
+- args:
+    permission:
+      check: {}
+      columns:
+      - dependencies
+      localPresets:
+      - key: user_id
+        value: x-hasura-User-Id
+      - key: ""
+        value: ""
+      set:
+        user_id: x-hasura-User-Id
+    role: user
+    table:
+      name: builds
+      schema: public
+  type: create_insert_permission

@@ -1,6 +1,17 @@
 # Bundler Monorepo
 
 ## Hasura
+
+## Making Changes to the Hasura Database
+
+Against a development environment, NEVER AGAINST PRODUCTION, run the hasura console command. This will setup a proxy server to allow you to track all changes made in the Hasura console as migrations in your local `hasura/migrations` directory
+
+```bash
+hasura console --admin-secret <admin-secret> --endpoint <endpoint_url>
+```
+
+Verify that migrations are on by visiting `http://localhost:9695/data/migrations`.
+
 ### Updating Hasura Deployment
 
 ```bash

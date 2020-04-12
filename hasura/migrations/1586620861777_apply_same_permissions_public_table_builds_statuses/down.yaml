@@ -1,0 +1,23 @@
+- args:
+    permission:
+      check: {}
+      columns:
+      - dependencies
+      set: {}
+    role: user
+    table:
+      name: builds
+      schema: public
+  type: create_insert_permission
+- args:
+    role: user
+    table:
+      name: builds
+      schema: public
+  type: drop_insert_permission
+- args:
+    role: user
+    table:
+      name: builds_statuses
+      schema: public
+  type: drop_insert_permission
