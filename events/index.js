@@ -9,6 +9,7 @@ async function main() {
   app.use(morgan('dev'));
   app.use(cors());
   app.use(bodyParser.json());
+  app.use(bodyParser.text());
 
   app.post("/events", async (req, res) => {
     const { event, trigger } = req.body;
@@ -25,6 +26,11 @@ async function main() {
       res.send("event trigger.name not defined.");
     }
   });
+
+  app.post("/webhooks", async (req, res) => {
+    console.log('req:', req.body)
+    res.send('ok');
+  })
 
   app.listen(4000, () => {
     console.log(`🚀 Server ready at http://localhost:4000`);

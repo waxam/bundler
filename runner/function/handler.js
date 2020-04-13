@@ -5,6 +5,7 @@ const cp = require("child_process");
 const fs = require("fs");
 const Minio = require("minio");
 const copydir = require("copy-dir");
+const fetch = require("node-fetch");
 
 var minioClient = new Minio.Client({
   endPoint: process.env.miniourl,
@@ -25,6 +26,7 @@ module.exports = async (req, context) => {
   // get body
   const { dependencies } = req.body;
   const { packages } = req.query;
+  const { monitor } = req.query
 
   if (dependencies) {
   }
@@ -46,6 +48,7 @@ module.exports = async (req, context) => {
       dependencies = { ...dependencies, ...dep };
     }
     console.log("dependencies:", dependencies);
+    monitorLog(`Dependencies received.`);
 
     // ensure tmp dir is there
     if (!fs.existsSync("/tmp/input")) {
@@ -117,6 +120,7 @@ module.exports = async (req, context) => {
     );
 
     console.log(`writing new bundle.js for ${tmpId}`);
+    monitorLog(`writing new bundle.js`, monitor);
     const importsBundle = `${packages
       .split(",")
       .map(i => i.split(":")[0])
@@ -127,11 +131,13 @@ module.exports = async (req, context) => {
 
     // yarn install
     console.log("yarn start");
+    monitorLog(`Installing dependencies`, monitor);
     await new Promise((res, rej) => {
       cp.spawn("yarn", ["install"], {
         cwd: tmpDir
       }).stdout.on("data", data => {
         console.log(data.toString());
+        monitorLog(`Installing dependencies: ${data.toString()};`, monitor);
       }).on('close', () => {
         res()
       });
@@ -143,6 +149,7 @@ module.exports = async (req, context) => {
         cwd: tmpDir
       }).stdout.on("data", data => {
         console.log(data.toString());
+        monitorLog(`Generating Build: ${data.toString()};`, monitor);
       }).on('close', () => {
         res()
       });
@@ -165,6 +172,7 @@ module.exports = async (req, context) => {
         cwd: tmpDir
       }).stdout.on("data", data => {
         console.log(data.toString());
+        monitorLog(`Packaging Build: ${data.toString()};`, monitor);
       }).on('close', () => {
         res()
       });
@@ -200,3 +208,13 @@ const uuid = () => {
     return v.toString(16);
   });
 };
+
+const monitorLog = (message, monitorUrl) => {
+  console.log('monitorUrl:', monitorUrl)
+  if (monitorUrl) {
+    fetch(monitorUrl, {
+      method: "POST",
+      body: message
+    })
+  }
+}
