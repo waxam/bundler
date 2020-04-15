@@ -8,11 +8,8 @@ build:
     context: events
   - image: irreversiblespec/bundler-service-runner
     context: runner
-  - image: irreversiblespec/bundler-service-portal
-    context: runner
 deploy:
   kubectl:
     manifests:
     - events/deployment.yaml
     - runner/deployment.yaml
-    - portal/deployment.yaml

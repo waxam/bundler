@@ -1,0 +1,12 @@
+- args:
+    name: builds_logs
+    table:
+      name: builds
+      schema: public
+    using:
+      foreign_key_constraint_on:
+        column: build_id
+        table:
+          name: builds_logs
+          schema: public
+  type: create_array_relationship

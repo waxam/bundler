@@ -1,0 +1,8 @@
+- args:
+    name: build
+    table:
+      name: builds_logs
+      schema: public
+    using:
+      foreign_key_constraint_on: build_id
+  type: create_object_relationship

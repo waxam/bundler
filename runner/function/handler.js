@@ -26,7 +26,9 @@ module.exports = async (req, context) => {
   // get body
   const { dependencies } = req.body;
   const { packages } = req.query;
-  const { monitor } = req.query
+  const { monitor } = req.query;
+  const { id } = req.query;
+  console.log('id:', id)
 
   if (dependencies) {
   }
@@ -48,7 +50,7 @@ module.exports = async (req, context) => {
       dependencies = { ...dependencies, ...dep };
     }
     console.log("dependencies:", dependencies);
-    monitorLog(`Dependencies received.`);
+    monitorLog({ id, message: `Dependencies received.`});
 
     // ensure tmp dir is there
     if (!fs.existsSync("/tmp/input")) {
@@ -120,7 +122,7 @@ module.exports = async (req, context) => {
     );
 
     console.log(`writing new bundle.js for ${tmpId}`);
-    monitorLog(`writing new bundle.js`, monitor);
+    monitorLog({ id, message: `writing new bundle.js`, monitorUrl: monitor });
     const importsBundle = `${packages
       .split(",")
       .map(i => i.split(":")[0])
@@ -131,13 +133,13 @@ module.exports = async (req, context) => {
 
     // yarn install
     console.log("yarn start");
-    monitorLog(`Installing dependencies`, monitor);
+    monitorLog({ id, message: `Installing dependencies`, monitorUrl: monitor });
     await new Promise((res, rej) => {
       cp.spawn("yarn", ["install"], {
         cwd: tmpDir
       }).stdout.on("data", data => {
         console.log(data.toString());
-        monitorLog(`Installing dependencies: ${data.toString()};`, monitor);
+        monitorLog({ id, message: `Installing dependencies: ${data.toString()};`, monitorUrl: monitor });
       }).on('close', () => {
         res()
       });
@@ -149,7 +151,7 @@ module.exports = async (req, context) => {
         cwd: tmpDir
       }).stdout.on("data", data => {
         console.log(data.toString());
-        monitorLog(`Generating Build: ${data.toString()};`, monitor);
+        monitorLog({ id, message: `Generating Build: ${data.toString()};`, monitorUrl: monitor });
       }).on('close', () => {
         res()
       });
@@ -172,7 +174,7 @@ module.exports = async (req, context) => {
         cwd: tmpDir
       }).stdout.on("data", data => {
         console.log(data.toString());
-        monitorLog(`Packaging Build: ${data.toString()};`, monitor);
+        monitorLog({ id, message: `Packaging Build: ${data.toString()};`, monitorUrl: monitor });
       }).on('close', () => {
         res()
       });
@@ -209,12 +211,16 @@ const uuid = () => {
   });
 };
 
-const monitorLog = (message, monitorUrl) => {
-  console.log('monitorUrl:', monitorUrl)
+const monitorLog = ({ id, message, monitorUrl}) => {
   if (monitorUrl) {
     fetch(monitorUrl, {
       method: "POST",
-      body: message
-    })
+      body: JSON.stringify({
+        type: "runner-monitor",
+        id,
+        data: message
+      })
+    }).then(res => res.text())
+      .then(res => console.log(res))
   }
 }

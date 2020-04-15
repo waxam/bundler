@@ -1,0 +1,20 @@
+- args:
+    role: user
+    table:
+      name: builds_logs
+      schema: public
+  type: drop_select_permission
+- args:
+    permission:
+      allow_aggregations: true
+      columns:
+      - build_id
+      - id
+      - output
+      computed_fields: []
+      filter: {}
+    role: user
+    table:
+      name: builds_logs
+      schema: public
+  type: create_select_permission

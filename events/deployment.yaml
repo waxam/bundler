@@ -23,6 +23,8 @@ spec:
         env:
         - name: BUNDLER_MANAGER_ENDPOINT_FQDN
           value: http://bundler.heymp.com/v1/graphql
+        - name: BUNDLER_EVENTS_FQDN
+          value: http://events.bundler.heymp.com
         - name: HASURA_GRAPHQL_ADMIN_SECRET
           valueFrom:
             secretKeyRef:

@@ -15,3 +15,11 @@ exports.insertBuild = gql`
     }
   }
 `
+
+exports.insertBuildLog = gql`
+  mutation insertBuildLog($build_id: Int, $output: String) {
+    insert_builds_logs(objects: { build_id: $build_id, output: $output }) {
+      affected_rows
+    }
+  }
+`

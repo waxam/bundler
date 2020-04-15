@@ -1,0 +1,6 @@
+- args:
+    relationship: builds_logs
+    table:
+      name: builds
+      schema: public
+  type: drop_relationship

@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require('morgan');
-const { updateBuildStatus, generateBuild } = require("./services.js");
+const { updateBuildStatus, generateBuild, insertBuildLog } = require("./services.js");
 
 async function main() {
   const app = express();
@@ -18,7 +18,7 @@ async function main() {
       res.status(200);
       res.send("ok");
       updateBuildStatus({ id: event.data.new.id, status: "RECIEVED" });
-      const output = await generateBuild({ dependencies: event.data.new.dependencies });
+      const output = await generateBuild({ id: event.data.new.id, dependencies: event.data.new.dependencies });
       updateBuildStatus({ id: event.data.new.id, status: "COMPLETED", output });
     }
     else {
@@ -28,9 +28,16 @@ async function main() {
   });
 
   app.post("/webhooks", async (req, res) => {
-    console.log('req:', req.body)
+    const { type, id, data } = JSON.parse(req.body);
+    if (type) {
+      if (type === "runner-monitor") {
+        if (id) {
+          insertBuildLog({ build_id: id, output: data });
+        }
+      }
+    }
     res.send('ok');
-  })
+  });
 
   app.listen(4000, () => {
     console.log(`🚀 Server ready at http://localhost:4000`);
