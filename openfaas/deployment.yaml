@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gateway
+  namespace: openfaas
+  annotations:
+    nginx.org/client-max-body-size: "500m"
+spec:
+  rules:
+  - host: fn.bundler.heymp.com
+    http:
+      paths:
+      - backend:
+          serviceName: gateway
+          servicePort: 8080
