@@ -2,6 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: minio
+  annotations:
+    nginx.org/client-max-body-size: "500m"
 spec:
   rules:
   - host: minio.bundler.heymp.com
