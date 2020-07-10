@@ -7,6 +7,9 @@ export const buildsSubscription = gql`
       status
       dependencies
       output
+      builds_logs(limit: 1, order_by: {build: {created_at: asc}}) {
+        output
+      }
     }
   }
 `;
@@ -18,6 +21,9 @@ export const builds = gql`
       status
       dependencies
       output
+      builds_logs(limit: 1, order_by: {build: {created_at: asc}}) {
+        output
+      }
     }
   }
 `;

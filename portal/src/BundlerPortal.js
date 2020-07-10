@@ -60,6 +60,7 @@ export class BundlerPortal extends MobxLitElement {
         <vaadin-grid-column path="id" header="id"></vaadin-grid-column>
         <vaadin-grid-column path="status" header="status"></vaadin-grid-column>
         <vaadin-grid-column path="output" header="output"></vaadin-grid-column>
+        <vaadin-grid-column path="logs" header="logs"></vaadin-grid-column>
         <vaadin-grid-column path="dependencies" header="dependencies"></vaadin-grid-column>
       </vaadin-grid>
 
