@@ -3,32 +3,25 @@
 const path = require("path");
 const cp = require("child_process");
 const fs = require("fs");
-const Minio = require("minio");
 const copydir = require("copy-dir");
 const fetch = require("node-fetch");
-
-var minioClient = new Minio.Client({
-  endPoint: process.env.miniourl,
-  port: 80,
-  useSSL: false,
-  accessKey: process.env.minioaccesskey,
-  secretKey: process.env.miniosecretkey
-});
+const rimraf = require("rimraf");
+const { minioClient } = require("./services.js");
 
 // write lock file for healthcheck
 cp.spawn("touch", ["/tmp/.lock"]);
 
 module.exports = async (req, context) => {
   let err;
-  const tmpId = uuid();
-  const tmpDir = path.join("/tmp", "input", tmpId);
 
   // get body
   const { dependencies } = req.body;
   const { packages } = req.query;
   const { monitor } = req.query;
   const { id } = req.query;
-  console.log('id:', id)
+
+  const tmpId = `${id}-${uuid()}`;
+  const tmpDir = path.join("/tmp", "input", tmpId);
 
   if (dependencies) {
   }
@@ -200,6 +193,9 @@ module.exports = async (req, context) => {
 
     // return output
     context.status(200).succeed(output);
+
+    // clean up tmp directory
+    rimraf(tmpDir);
   }
 };
 
