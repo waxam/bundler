@@ -10,7 +10,6 @@
     "build": "rimraf dist && rollup -c rollup.config.js"
   },
   "dependencies": {
-    "graphql-tag": "^2.10.3",
     "lit-element": "^2.0.1",
     "lit-html": "^1.0.0",
     "mobx": "^5.15.4",

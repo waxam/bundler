@@ -1,6 +1,4 @@
-import gql from "https://cdn.pika.dev/graphql-tag@^2.10.1";
-
-export const buildsSubscription = gql`
+export const buildsSubscription = `
   subscription BuildsSubscription {
     builds(order_by: { updated_at: desc }) {
       id
@@ -14,7 +12,7 @@ export const buildsSubscription = gql`
   }
 `;
 
-export const builds = gql`
+export const builds = `
   query Builds {
     builds(order_by: { updated_at: desc }) {
       id
@@ -28,7 +26,7 @@ export const builds = gql`
   }
 `;
 
-export const insertBuild = gql`
+export const insertBuild = `
   mutation createBuild($dependencies: jsonb) {
     insert_builds(objects: {dependencies: $dependencies}) {
       affected_rows

@@ -66,7 +66,7 @@ wsClient().then((socket) => {
       payload: {
         variables: {},
         extensions: {},
-        query: buildsSubscription.loc.source.body
+        query: buildsSubscription
       },
     })
   );

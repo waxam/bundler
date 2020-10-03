@@ -42,6 +42,6 @@ export const client = ({ query, variables = {} }) => {
       "content-type": "application/json",
       "Authorization": "Bearer user"
     },
-    body: JSON.stringify({ query: query.loc.source.body, variables }),
+    body: JSON.stringify({ query, variables }),
   }).then((res) => res.json());
 };
